@@ -1,0 +1,181 @@
+:root {
+    --bg-color: #303337;
+    --main-line-color: #212326;
+    --complete-line-color: #4EE8FF;
+    --text-color: #181A1C;
+    --active-section-color: #9EB0BB;
+}
+
+html,
+body {
+    font: 100% "Lato", sans-serif;
+    font-weight: 300;
+    height: 100%;
+    background-color: var(--bg-color);
+}
+
+.blue-bg {
+    background-color: var(--bg-color);
+    color: var(--main-line-color);
+    height: 100%;
+}
+
+.circle {
+    font-weight: bold;
+    padding: 20px 20px;
+    border-radius: 50%;
+    background-color: var(--main-line-color);
+    color: var(--bg-color);
+    z-index: 2;
+}
+
+.circle-inner {
+    padding: 0px 0px;
+    border-radius: 50%;
+    background-color: var(--bg-color);
+}
+
+.how-it-works.row {
+    display: flex;
+}
+.how-it-works.row .col-2 {
+    display: inline-flex;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+}
+.how-it-works.row .col-2::after,
+.col-2::before {
+    content: "";
+    position: absolute;
+    border-left: 3px solid var(--main-line-color);
+    z-index: 1;
+}
+.how-it-works.row .col-2.bottom-left::after {
+    height: 50%;
+    left: 50%;
+    top: 50%;
+}
+.how-it-works.row .col-2.bottom-right::after {
+    height: 50%;
+    left: calc(50% - 3px);
+    top: 50%;
+}
+.how-it-works.row .col-2.full-right::after {
+    height: 100%;
+    left: calc(50% - 3px);
+}
+.how-it-works.row .col-2.full-left::after {
+    height: 100%;
+    left: 50%;
+}
+.how-it-works.row .col-2.top-left::before {
+    height: 50%;
+    left: 50%;
+    top: 0;
+}
+.how-it-works.row .col-2.top-right::before {
+    height: 50%;
+    left: calc(50% - 3px);
+    top: 0;
+}
+
+.timeline div {
+    padding: 0;
+    height: 40px;
+}
+
+.timeline hr {
+    border-top: 3px solid var(--main-line-color);
+    margin: 0;
+    top: 17px;
+    position: relative;
+}
+
+.timeline .col-2 {
+    display: flex;
+    overflow: hidden;
+}
+
+.timeline .corner {
+    border: 3px solid var(--main-line-color);
+    width: 100%;
+    position: relative;
+    border-radius: 15px;
+}
+
+.timeline .top-right {
+    left: 50%;
+    top: -50%;
+}
+
+.timeline .left-bottom {
+    left: -50%;
+    top: calc(50% - 3px);
+}
+
+.timeline .top-left {
+    left: -50%;
+    top: -50%;
+}
+
+.timeline .right-bottom {
+    left: 50%;
+    top: calc(50% - 3px);
+}
+
+.row:focus .col-2:after,
+.row:focus ~ .row .col-2.top-right:before,
+.row:focus ~ .row .col-2.bottom-right:after,
+.row:focus ~ .row .col-2.top-left:before,
+.row:focus ~ .row .col-2.bottom-left:after,
+.row:focus ~ .row .corner,
+.row:focus ~ .row hr {
+    border-color: var(--complete-line-color);
+}
+
+.row:focus ~ .row .circle {
+    border-color: var(--complete-line-color);
+    background-color: var(--complete-line-color);
+}
+
+.row:focus .circle {
+    background-color: var(--complete-line-color);
+    animation-name: focus-circle;
+    animation-duration: 0.5s;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+}
+.row:focus .circle-inner {
+    animation-name: focus-circle-inner;
+    animation-duration: 0.5s;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    box-shadow: 0 0 14px 9px #4EE8FF;
+}
+.row:focus .col-6 {
+    color: var(--active-section-color);
+}
+.row:focus ~ .row .col-6 {
+    color: var(--complete-line-color);
+}
+
+/* focus section animation */
+@keyframes focus-circle {
+  0% {padding: 10px;}
+  50% {padding: 8px;}
+  100% {padding: 10px;}
+}
+@keyframes focus-circle-inner {
+  0% {padding: 10px;}
+  50% {padding: 12px;}
+  100% {padding: 10px;}
+}
+
+.col-6 {
+    color: var(--text-color);
+}
+
+h2.pb-3.pt-2 {
+    color: var(--active-section-color);
+}
