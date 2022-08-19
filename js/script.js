@@ -1,6 +1,41 @@
-let root = document.querySelector('#root');
+const Direction = Object.freeze({
+	LEFT: 0,
+	RIGHT: 1,
+  
+	left_arr: Object.freeze(["left", "l"]),
+	right_arr: Object.freeze(["right", "r"])
+});
 
-function topRightSection(header, text) {
+let defaultSide = Direction.LEFT;
+let headerSide = Direction.LEFT;
+let defaultText = "";
+let root = document.querySelector("#root");
+
+function getSide(ind) {
+	
+	
+	let side = data[ind].side;
+	
+	if (side != null) {
+		if (Direction.right_arr.indexOf(side.toLowerCase()) != -1) {
+			return Direction.RIGHT;
+		} else if (Direction.left_arr.indexOf(side.toLowerCase()) != -1) {
+			return Direction.LEFT;
+		}
+	}
+	
+	return defaultSide;
+}
+
+function getHeader(ind) {
+	return data[ind].header;
+}
+
+function getText(ind) {
+	return data[ind].text;
+}
+
+function topRightSection(header = defaultText, text = defaultText) {
 	let element = `
 		<div class="row align-items-center justify-content-end how-it-works" tabindex="-1">
             <div class="col-6 text-right">
@@ -14,11 +49,11 @@ function topRightSection(header, text) {
             </div>
         </div>
 	`;
-  
+	
 	root.insertAdjacentHTML("afterbegin", element);
 }
 
-function topLeftSection(header, text) {
+function topLeftSection(header = defaultText, text = defaultText) {
 	let element = `
 		<div class="row align-items-center how-it-works" tabindex="-1">
             <div class="col-2 text-center bottom-left">
@@ -32,7 +67,7 @@ function topLeftSection(header, text) {
             </div>
         </div>
 	`;
-  
+	
 	root.insertAdjacentHTML("afterbegin", element);
 }
 
@@ -50,7 +85,7 @@ function connectionToRight() {
             </div>
         </div>
 	`;
-  
+	
 	root.insertAdjacentHTML("afterbegin", element);
 }
 
@@ -68,11 +103,11 @@ function connectionToLeft() {
             </div>
         </div>
 	`;
-  
+	
 	root.insertAdjacentHTML("afterbegin", element);
 }
 
-function midRightSection(header, text) {
+function midRightSection(header = defaultText, text = defaultText) {
 	let element = `
 		<div class="row align-items-center justify-content-end how-it-works" tabindex="-1">
             <div class="col-6 text-right">
@@ -90,7 +125,7 @@ function midRightSection(header, text) {
 	root.insertAdjacentHTML("afterbegin", element);
 }
 
-function midLeftSection(header, text) {
+function midLeftSection(header = defaultText, text = defaultText) {
 	let element = `
 		<div class="row align-items-center how-it-works" tabindex="-1">
             <div class="col-2 text-center top-left bottom-left">
@@ -108,7 +143,7 @@ function midLeftSection(header, text) {
 	root.insertAdjacentHTML("afterbegin", element);
 }
 
-function bottomLeftSection(header, text) {
+function bottomLeftSection(header = defaultText, text = defaultText) {
 	let element = `
 		 <div class="row align-items-center how-it-works" tabindex="-1">
             <div class="col-2 text-center top-left">
@@ -126,7 +161,7 @@ function bottomLeftSection(header, text) {
 	root.insertAdjacentHTML("afterbegin", element);
 }
 
-function bottomRightSection(header, text) {
+function bottomRightSection(header = defaultText, text = defaultText) {
 	let element = `
 		 <div class="row align-items-center justify-content-end how-it-works" tabindex="-1">
             <div class="col-6 text-right">
@@ -149,32 +184,53 @@ function roadmapInit() {
 		return;
 	}
 	
-	if (sourceOnTheRight) {
-		bottomRightSection(data[0].header, data[0].text);
-		connectionToLeft()
-	} else {
-		bottomLeftSection(data[0].header, data[0].text);
-		connectionToRight()
+	let currentSide = getSide(0);
+	
+	if (currentSide === Direction.RIGHT) {
+		bottomRightSection(getHeader(0), getText(0));
+	} else if (currentSide === Direction.LEFT) {
+		bottomLeftSection(getHeader(0), getText(0));
 	}
 	
-	
 	for (let i = 1; i < data.length - 1; i++) {
-		if (i % 2 == sourceOnTheRight) {
-			midLeftSection(data[i].header, data[i].text);
-			connectionToRight()
-		} else {
-			midRightSection(data[i].header, data[i].text);
-			connectionToLeft()
+		let side = getSide(i);
+		if (side === Direction.RIGHT) {
+			if (currentSide === Direction.LEFT) {
+				connectionToRight();
+			}
+			midRightSection(getHeader(i), getText(i));
+			currentSide = side;
+		} else if (side === Direction.LEFT) {
+			if (currentSide === Direction.RIGHT) {
+				connectionToLeft();
+			}
+			midLeftSection(getHeader(i), getText(i));
+			currentSide = side;
 		}
 	}
 	
-	if (data.length % 2 == sourceOnTheRight) {
-		topRightSection(data[data.length - 1].header, data[data.length - 1].text);
-	} else {
-		topLeftSection(data[data.length - 1].header, data[data.length - 1].text);
+	let lastInd = data.length - 1;
+	let side = getSide(lastInd);
+	if (side === Direction.RIGHT) {
+		if (currentSide === Direction.LEFT) {
+			connectionToRight();
+		}
+		topRightSection(getHeader(lastInd), getText(lastInd));
+	} else if (side === Direction.LEFT) {
+		if (currentSide === Direction.RIGHT) {
+			connectionToLeft();
+		}
+		topLeftSection(getHeader(lastInd), getText(lastInd));
 	}
 	
-	root.insertAdjacentHTML("afterbegin", `<h2 class="pb-3 pt-2">${title}</h2>`);
+	let headerClasses = "pb-3 pt-2";
+	if (headerSide === Direction.LEFT) {
+		headerClasses += " align-l";
+	} else if (headerSide === Direction.RIGHT) {
+		headerClasses += " align-r";
+	}
+	
+	root.insertAdjacentHTML("afterbegin", `<h2 class="${headerClasses}">${title}</h2>`);
 }
 
 roadmapInit();
